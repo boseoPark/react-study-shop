@@ -18,7 +18,7 @@
 }
 
 .productName {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .productImg {
@@ -29,6 +29,10 @@
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transform: scale(1.02); /* 약간 확대되게 */
+}
+
+.productInput {
+  margin-top: 10px; 
 }
 
 .App {
