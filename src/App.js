@@ -5,11 +5,12 @@ import { Button, Container, Nav, Navbar, Row, Col } from 'react-bootstrap';
 import data from './datas/data.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
 import Detail from "./routes/detail.jsx";
+import axios from "axios";
 
-
+const FALLBACK_IMG = process.env.PUBLIC_URL + "/img/product1.webp"; // 기본 이미지
 function App() {
 
-  let [products] = useState(data);
+  let [products, setProducts] = useState(data);
   let navigate = useNavigate();
 
   return (
@@ -35,11 +36,29 @@ function App() {
            <div className='main-bg' style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/img/main_thumbnail.jpg)`}}></div>
             <div className='products'>
               <Container>
-                <Row>
+                <Row xs={1} md={3}>
                   {products.map((item, i) => (
                     <ProductCard key={i} item={item} />
                   ))}
                 </Row>
+                <button onClick={()=> {
+                  // 로딩중 UI 띄우기 
+                  axios.get('https://codingapple1.github.io/shop/data2.json')
+                  .then((data)=> {
+                    setProducts(prev => [...prev, ...data.data]);
+                    // 로딩중 UI 숨기기
+                  })
+                  .catch(()=> {
+                    console.log('실패!')
+                    // 로딩중 UI 숨기기
+                  })
+
+                  // 동시에 ajax 요청 후 동일 처리 하려면 
+                  Promise.all([axios.get('/url1'), axios.get('/url2')])
+                  .then(()=> {
+
+                  })
+                }}>더보기</button>
               </Container>
             </div>
           </>
@@ -100,11 +119,19 @@ function AboutLocation() {
 
 function ProductCard({ item }) {
   const navigate = useNavigate();
+  const imgSrc = process.env.PUBLIC_URL + item.img;
+
+   const handleImgError = (e) => {
+    e.currentTarget.onerror = null;         // 무한 루프 방지
+    e.currentTarget.src = FALLBACK_IMG;     // 대체 이미지
+  };
+
   return (
     <Col>
       <img 
         className='productImg' 
-        src={process.env.PUBLIC_URL + item.img} width='90%'
+        src={imgSrc} width='90%'
+        onError={handleImgError}
         onClick={() => navigate(`/detail/${item.id}`)}
       />
       <h4 className='productName'>{item.title}</h4>

@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from 'styled-components'
+import { Nav } from 'react-bootstrap'
+
 
 export default function Detail(props) {
 
     let [count, setCount] = useState(3); // 카운팅 
     let [timer, setTimer] = useState(true); 
     let [val, setVal] = useState(""); // input 텍스트 
+    let [tab, setTab] = useState(0);
 
     useEffect(() => {
        let timer = setTimeout(()=> { setTimer(false);}, 2000);
-
-       console.log(2);
        return () => { // useEffect 동작 전에 실행 
-        console.log(1);
         clearTimeout(timer)
        }
     }); 
@@ -52,6 +52,8 @@ export default function Detail(props) {
                 : null
             }
             
+
+            {/** 상세 내용 */}
             <div className="row">
                 <div className="col-md-6">
                     <img src={props.products[id].img} width="100%" />
@@ -72,10 +74,29 @@ export default function Detail(props) {
                            required 
                         />
                     </div>
-                    
                 </div>
             </div>
+            {/** tab 3개 */}
+            <Nav variant="tabs"  defaultActiveKey="link0">
+                <Nav.Item>
+                    <Nav.Link onClick={()=> setTab(0)} eventKey="link0" >버튼0</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link onClick={()=> setTab(1)} eventKey="link1">버튼1</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link onClick={()=> setTab(2)} eventKey="link2">버튼2</Nav.Link>
+                </Nav.Item>
+            </Nav>
+            <TabContent tab={tab}/>
         </div> 
     )
 }
+
+function TabContent({tab}) {
+    return [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab]
+}
+
+
+
 
